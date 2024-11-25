@@ -28,7 +28,7 @@ This application listens to specified subreddits and collects statistics in near
 - An active Reddit account to obtain API credentials.
 
   First please set API redirect url as follows
-![alt text](./Help/image.png)
+![credential](./Help/image.png)
 
 ## Installation
 
@@ -79,8 +79,10 @@ The application exposes the following RESTful API endpoints:
 - GET /api/statistics/top-user: Returns the user with the most posts.
 - GET /api/subreddit: Lists all currently monitored subreddits.
 - POST /api/subreddit: Adds a subreddit to be monitored. Requires a subreddit name in the request body.
+
 ### Swagger UI
 Access Swagger UI: Navigate to http://localhost:5000 (or your configured port) to view the Swagger UI. This interface allows you to explore and test the API endpoints interactively.
+![Swagger](./Help/image2.png)
 
 ## Running Tests
 To run the unit tests for the application:
