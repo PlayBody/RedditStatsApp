@@ -1,15 +1,87 @@
-# Reddit Stats App
 
-This application monitors a specified subreddit and reports statistics on posts and users.
+# Reddit Statistics Application
 
+This application listens to specified subreddits and collects statistics in near real time. It tracks the posts with the most upvotes and users with the most posts. The application continuously requests data from the Reddit API and reports the statistics to the console.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Running Tests](#running-tests)
+
+## Features
+
+- Monitors specified subreddits in real time.
+- Tracks:
+  - Posts with the most upvotes.
+  - Users with the most posts.
+- Periodically reports statistics to the console.
+- Handles errors and rate limits from the Reddit API.
+- Unit tests for core functionality.
+
+## Requirements
+
+- .NET 8.0
+- An active Reddit account to obtain API credentials.
+
+  First please set API redirect url as follows
 ![alt text](./Help/image.png)
 
-## Setup
+## Installation
 
-1. Clone the repository.
-2. Navigate to the project directory.
-3. Run the application using `dotnet run`.
+1. Clone the repository:
+  ```bash
+  git clone https://github.com/playbody/RedditStatsApp.git
+  cd RedditStatsApp
+  ```
+2. Open the solution in Visual Studio or your preferred IDE.
+3. Restore the NuGet packages:
+  ```bash
+  dotnet restore
+  ```
+## Configuration
+Before running the application, you need to configure your Reddit API credentials.
 
+1. Open App.config (or appsettings.json if you are using .NET Core) and set the following values:
+
+  ```xml
+  <?xml version="1.0" encoding="utf-8" ?>
+  <configuration>
+    <appSettings>
+        <add key="appId" value="YOUR_REDDIT_APP_ID" />
+        <add key="appSecret" value="YOUR_REDDIT_APP_SECRET" />
+        <add key="subreddits" value="technology,todayilearned" />
+        <add key="waitingMs" value="60000" />
+    </appSettings>
+  </configuration>
+  ```
+Replace `YOUR_REDDIT_APP_ID` and `YOUR_REDDIT_APP_SECRET` with your actual Reddit API credentials. You can create an application in your Reddit account settings to obtain these credentials.
 ## Usage
+1. Build and run the application:
 
-Enter the name of the subreddit you want to monitor when prompted.
+  ```bash
+  dotnet run
+  ```
+2. The application will open a browser window for Reddit authorization. Follow the prompts to authorize the application.
+
+3. Once authorized, the application will start monitoring the specified subreddits and report statistics to the console.
+
+4. Press any key to exit the application.
+
+## Running Tests
+To run the unit tests for the application:
+
+1. Navigate to the test project directory:
+
+  ```bash
+  cd Tests
+  ```
+2. Run the tests using the following command:
+
+  ```bash
+  dotnet test
+  ```
+You can also run tests directly from Visual Studio using the Test Explorer.
