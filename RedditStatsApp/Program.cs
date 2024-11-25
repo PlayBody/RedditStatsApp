@@ -1,34 +1,38 @@
-﻿using System;
-using System.Configuration;
-using System.Threading.Tasks;
-using RedditStatsApp.Services;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RedditStatsApp.Interfaces;
+using RedditStatsApp.Services;
+using System.Configuration;
 
-string appId = ConfigurationManager.AppSettings["appId"] ?? throw new ArgumentNullException("appId");
-string appSecret = ConfigurationManager.AppSettings["appSecret"] ?? throw new ArgumentNullException("appSecret");
-string[] subreddits = (ConfigurationManager.AppSettings["subreddits"] ?? "technology").Split(',');
-
-int waitingMs = int.Parse(ConfigurationManager.AppSettings["waitingMs"] ?? "60000");
-string redirectUri = "http://localhost:8080";
-
-try
+namespace RedditStatsApp
 {
-    var redditService = new RedditService(appId, appSecret, redirectUri, waitingMs);
-    var statisticsService = new StatisticsService();
+    public class Program
+    {
+        static async Task Main(string[] args)
+        {
+            var host = CreateHostBuilder(args).Build();
+            await host.RunAsync();
+        }
 
-    Console.WriteLine("Opening browser for Reddit authorization...");
-    await redditService.AuthorizeAsync();
-
-
-    var monitoringTasks = subreddits.Select(subreddit =>
-        redditService.MonitorSubredditAsync(subreddit.Trim(), statisticsService)).ToArray();
-
-    await Task.WhenAll(monitoringTasks);
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddSingleton<IStatisticsService, StatisticsService>();
+                    services.AddSingleton<IRedditService, RedditService>(provider =>
+                    {
+                        var appId = ConfigurationManager.AppSettings["appId"] ?? "";
+                        var appSecret = ConfigurationManager.AppSettings["appSecret"] ?? "";
+                        var redirectUri = ConfigurationManager.AppSettings["redirectUri"] ?? "";
+                        var waitingMs = int.Parse(ConfigurationManager.AppSettings["waitingMs"] ?? "60000");
+                        return new RedditService(appId, appSecret, redirectUri, waitingMs);
+                    });
+                    services.AddHostedService<SubredditMonitoringService>();
+                });
+    }
 }
-catch (Exception ex)
-{
-    Console.WriteLine($"An error occurred: {ex.Message}");
-}
-
-Console.WriteLine("Press any key to exit...");
-ConsoleKeyInfo _ = Console.ReadKey();

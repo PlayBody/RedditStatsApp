@@ -60,6 +60,7 @@ Before running the application, you need to configure your Reddit API credential
   ```
 Replace `YOUR_REDDIT_APP_ID` and `YOUR_REDDIT_APP_SECRET` with your actual Reddit API credentials. You can create an application in your Reddit account settings to obtain these credentials.
 ## Usage
+
 1. Build and run the application:
 
   ```bash
@@ -70,6 +71,16 @@ Replace `YOUR_REDDIT_APP_ID` and `YOUR_REDDIT_APP_SECRET` with your actual Reddi
 3. Once authorized, the application will start monitoring the specified subreddits and report statistics to the console.
 
 4. Press any key to exit the application.
+
+### API Endpoints
+The application exposes the following RESTful API endpoints:
+
+- GET /api/statistics/top-post: Returns the post with the most upvotes.
+- GET /api/statistics/top-user: Returns the user with the most posts.
+- GET /api/subreddit: Lists all currently monitored subreddits.
+- POST /api/subreddit: Adds a subreddit to be monitored. Requires a subreddit name in the request body.
+### Swagger UI
+Access Swagger UI: Navigate to http://localhost:5000 (or your configured port) to view the Swagger UI. This interface allows you to explore and test the API endpoints interactively.
 
 ## Running Tests
 To run the unit tests for the application:
@@ -85,3 +96,23 @@ To run the unit tests for the application:
   dotnet test
   ```
 You can also run tests directly from Visual Studio using the Test Explorer.
+
+## Architecture
+1. Services: 
+
+Process reddit in background mode.
+Manages in-memory statistics for posts and users.
+Handles Reddit API interactions and monitors subreddits.
+
+2. Controllers: 
+
+Provides RESTful API endpoints for accessing statistics and managing subreddits.
+
+3. Models: 
+
+Defines data structures for Post and User.
+
+4. Interfaces:
+
+Defines contracts for services to ensure loose coupling.
+Considerations
